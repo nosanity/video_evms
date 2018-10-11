@@ -121,12 +121,11 @@ def get_video_info(edx_video_id):
         return None
     url_api = u'{0}/api/v2/video/{1}?token={2}'.format(EVMS_URL, edx_video_id, token)
     try:
-        response = urllib2.urlopen(url_api)
-        data = response.read()
-        clean_data = json.loads(data)
+        response = reguests.get(url_api)
+        clean_data = json.loads(data.text)
         return clean_data
     except:
-        return None
+        return {'encoded_videos':[]}
 
 
 def export_to_xml(edx_video_id):

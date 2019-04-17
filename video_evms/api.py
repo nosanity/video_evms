@@ -121,10 +121,11 @@ def get_video_info(edx_video_id):
         return None
     url_api = u'{0}/api/v2/video/{1}?token={2}'.format(EVMS_URL, edx_video_id, token)
     try:
-        response = reguests.get(url_api)
-        clean_data = json.loads(data.text)
+        response = requests.get(url_api)
+        clean_data = json.loads(response.text)
         return clean_data
     except:
+        log.error("EVMS error for url: {}".format(url_api))
         return {'encoded_videos':[]}
 
 
@@ -186,7 +187,7 @@ def get_course_edx_val_ids(course_id):
 
     values = [{"display_name": MESSAGES["MANUALLY_MESSAGE"], "value": ""}]
     if not videos:
-        log.error(u"EVMS api response error for course_id {}:{}".format(course_id, str(response)))
+        log.error(u"EVMS api response error for course_id {} and url {}: {} {}".format(course_guid, url_api, str(response.status_code), response.text))
         return values
     thr = 67 # Длина форматируемой строки для отображения в редакторе Studio
     py_placeholder = " --- "

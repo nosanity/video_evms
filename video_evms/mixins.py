@@ -141,7 +141,7 @@ class VideoDescriptorEvmsMixin(object):
         self.child_editor_saved(user, old_metadata, old_content)
         self.runtime.modulestore.update_item(self, user.id)
         self.synch_edx_id(old_metadata=old_metadata, new_metadata=own_metadata(self))
-        if self.edx_video_id and self.youtube_id_1_0:
+        if self.edx_video_id and self.youtube_id_1_0 and not self.edx_video_id_random:
             self.youtube_id_1_0 = ''
         self.save()
 
@@ -170,12 +170,14 @@ class VideoDescriptorEvmsMixin(object):
             if eid not in values:
                 block._values.append({"display_name": self.edx_dropdown_video_overriden(eid), "value": eid})
             self.edx_dropdown_video_id = eid
+            self.edx_video_id_random = False
 
         def master_dropdown(eid):
             if eid:
                 self.edx_video_id = eid
             else:
                 self.edx_video_id = ""
+            self.edx_video_id_random = False
 
         """
         Смотрим какое поле поменял пользователь: это поле будет master
@@ -199,6 +201,8 @@ class VideoDescriptorEvmsMixin(object):
             master_native(native_eid)
             return
         if old_dropdown_eid != new_dropdown_eid:
+            if not new_dropdown_eid and self.youtube_id_1_0:
+                return
             master_dropdown(new_dropdown_eid)
         return
 

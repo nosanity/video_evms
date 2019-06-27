@@ -157,7 +157,7 @@ def export_to_xml(edx_video_id):
     return video_el
 
 
-def import_from_xml(xml, edx_video_id, course_id=None):
+def import_from_xml(xml, edx_video_id, resource_fs, static_dir, external_transcripts=dict(), course_id=None):
     return
 
 

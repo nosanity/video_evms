@@ -8,6 +8,11 @@ from lxml.etree import Element, SubElement
 import requests
 
 from settings import MESSAGES
+try:
+    from edxval.api import create_transcripts_xml, export_to_xml as export_to_xml_orig
+except ImportError:
+    create_transcripts_xml = None
+    export_to_xml_orig = None
 
 log = logging.getLogger(__name__)
 
@@ -129,9 +134,11 @@ def get_video_info(edx_video_id):
         return {'encoded_videos':[]}
 
 
-def export_to_xml(edx_video_id):
+def export_to_xml(edx_video_id, resource_fs=None, static_dir=None, course_id=None):
     video = get_video_info(edx_video_id)
     if video is None:
+        if export_to_xml_orig is not None:
+            return export_to_xml_orig(edx_video_id, resource_fs, static_dir, course_id)
         return Element('video_asset')
     else:
         if isinstance(video, list):
@@ -154,6 +161,8 @@ def export_to_xml(edx_video_id):
         )
     # Note: we are *not* exporting Subtitle data since it is not currently updated by VEDA or used
     # by LMS/Studio.
+    if create_transcripts_xml is not None:
+        return create_transcripts_xml(edx_video_id, video_el, resource_fs, static_dir)
     return video_el
 
 

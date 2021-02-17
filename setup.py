@@ -8,7 +8,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 setup(
     name='video-evms',
     version='0.1',
-    package_data={'video_evms': 'static/*'},
+    package_data={'video_evms': ['static/*']},
     packages=['video_evms'],
     description='Video player extension for Open edX',
     long_description=README,
